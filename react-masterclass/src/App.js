@@ -8,6 +8,8 @@ import styled from "styled-components";
 
 // 2-2
 // 중복된 코드를 제거하고 확장 가능한 styled-component 사용방법
+
+
 const Father = styled.div`
   display: flex;
 `;
@@ -37,10 +39,34 @@ const Text = styled.span`
 
 // styled components를 사용하면 더 편하다.
 
+// 2-3
+// html 태그만 다른걸로 바꾸고 싶다?
+const Btn = styled.button`
+  color: white;
+  background-color: tomato;
+  border: 0;
+  border-radius: 15px;
+`;
+
+// <Btn as="a">Log in</Btn>
+//  위처럼 as 를 사용하면 됨. Html만 바꿀수있음. style은 유지하고.
+
+// Html 속성 추가도 가능하다.
+// 전달된 속성을 {}에 담을 수 있다.
+const Input = styled.input.attrs({required: true, minLength: 10})`
+  background-color: tomato;
+`;
+
+
 function App() {
   return <Father>
-    <Box bgColor="teal"/>
-    <Circle bgColor="whitesmoke"/>
+    <Btn>Log in</Btn>
+    <Btn as="a" href="/">Log in</Btn>
+    <Input/>
+    <Input/>
+    <Input/>
+    <Input/>
+    <Input/>
   </Father>
 }
 
