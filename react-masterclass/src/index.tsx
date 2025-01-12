@@ -2,29 +2,16 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 
 import App from './App';
-import {ThemeProvider} from 'styled-components';
 
 
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
-
-const darkTheme = {
-    textColor: "whitesmoke",
-    backgroundColor: "#111"
-
-};
-
-const lightTheme = {
-    textColor: "#111",
-    backgroundColor: "whitesmoke"
-};
-
+// 3-2
+// Component의 어떤 prop가 없으면 에러가나는지 typescript가 어떻게 알까?
 
 root.render(
   <React.StrictMode>
-      <ThemeProvider theme={lightTheme}>
     <App />
-      </ThemeProvider>
   </React.StrictMode>
 );
 
