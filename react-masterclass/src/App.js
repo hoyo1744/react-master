@@ -1,43 +1,70 @@
 
-import styled from "styled-components";
+import styled, {keyframes} from "styled-components";
 
-// `` 내부에 css 코드를 넣어준다.
-//  return <Father> 이렇게 적용한다. 더 간편하군?
-// styled.<html 태그>`css 코드`
-const Father = styled.div`
-  display: flex;
+//2-4 animation 추가
+// keyframes를 추가해줘야 애니메이션을 사용할 수 있음.
+const Wrapper = styled.div`
+    display: flex;    
 `;
 
-const BoxOne = styled.div`
-  background-color: teal;
-  width: 100px;
-  height: 100px;
+const animation = keyframes`
+  0% {
+    transform: rotate(0deg);
+    border-radius: 0px;
+  }
+  50% {
+    transform: rotate(360deg);
+    border-radius: 100px;
+  
+  }
+  100% {
+    transform: rotate(0deg);
+    border-radius: 0px;
+    
+  }
 `;
 
-const BoxTwo = styled.div`
+
+// span {
+//
+//   }
+// Box안에서 위와 같이 선언해주면 Box안에 존재하는 span을 가리킴
+// 그래서 span이라는 styled-component가 아니더라도 Box에서 style을 줄수있다.
+
+const Box = styled.div`
+  height: 200px;
+  width: 200px;
   background-color: tomato;
-  width: 100px;
-  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation:${animation} 1s linear infinite;
+  // Box안의 span까지 style을 Box에서 줄 수 있다.
+  span {
+    font-size: 36px;
+    //아래의 코드는 span: hover{}과 같은 코드임., &은 span을 호명하는것과 같다.
+    &:hover{
+        font-size: 60px;
+      
+    }
+  }
+  //span:hover {
+  //
+  //}
+      
+  
+}
+  
 `;
-
-const Text = styled.span`
-  color: white;
-`;
-
-// 2-1
-// npm i styled-components
-//  return <div style={{display:"flex"}}> 이런 방식은 div가 매우 많고 css를 코드로 적용한거임. 보통은 css 파일을 따로 빼내지.
-// 장점은 직관적이다.
-
-// styled components를 사용하면 더 편하다.
-
 function App() {
-  return <Father>
-    <BoxOne>
-      <Text>Hello</Text>
-    </BoxOne>
-    <BoxTwo/>
-  </Father>
+  return (
+      <Wrapper>
+        <Box>
+        <span>😍</span>
+        </Box>
+      </Wrapper>
+  )
+
 }
 
 export default App;
