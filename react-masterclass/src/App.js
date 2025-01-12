@@ -1,10 +1,13 @@
 
 import styled, {keyframes} from "styled-components";
 
-//2-4 animation 추가
-// keyframes를 추가해줘야 애니메이션을 사용할 수 있음.
+// 2-5 style-component안에서 내부에서 특정 태그에 의존하고 싶지 않다면?
 const Wrapper = styled.div`
-    display: flex;    
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    justify-content: center;
+    align-items: center;
 `;
 
 const animation = keyframes`
@@ -25,11 +28,10 @@ const animation = keyframes`
 `;
 
 
-// span {
-//
-//   }
-// Box안에서 위와 같이 선언해주면 Box안에 존재하는 span을 가리킴
-// 그래서 span이라는 styled-component가 아니더라도 Box에서 style을 줄수있다.
+
+const Emoji = styled.span`
+    font-size: 36px;
+`;
 
 const Box = styled.div`
   height: 200px;
@@ -39,20 +41,14 @@ const Box = styled.div`
   justify-content: center;
   align-items: center;
   animation:${animation} 1s linear infinite;
-  // Box안의 span까지 style을 Box에서 줄 수 있다.
-  span {
-    font-size: 36px;
-    //아래의 코드는 span: hover{}과 같은 코드임., &은 span을 호명하는것과 같다.
+  // Box안의 span까지 style을 Box에서 줄 수 있다. 다만 span이 아니라면? 지금 Box는 span에 의존하고 있다.
+  //  그럼 어떻게해야할까? html 태그가 아니라 style-component를 의존하면 되지 않을까?
+  //  아래처럼하면 Emoji에 의존하니까 html 태그가 변경되어도 상관없다.
+  ${Emoji} {
     &:hover{
-        font-size: 60px;
-      
+        font-size: 98px;
     }
   }
-  //span:hover {
-  //
-  //}
-      
-  
 }
   
 `;
@@ -60,8 +56,9 @@ function App() {
   return (
       <Wrapper>
         <Box>
-        <span>😍</span>
+            <Emoji>😍</Emoji>
         </Box>
+        <Emoji>💖</Emoji>
       </Wrapper>
   )
 
