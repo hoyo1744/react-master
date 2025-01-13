@@ -1,5 +1,7 @@
+
 import {useState} from "react";
 import React from 'react';
+import styled from "styled-components";
 
 // 3-5
 // event에 타입을 지정하는 방법, 지정하지 않으면 any 타입임. 어떤타입이든 올 수 있음
@@ -11,6 +13,14 @@ import React from 'react';
 // > const value = event.currentTarget.value
 // > const {value} = event.currentTarget
 // > const {currentTarget:{value}} = event
+
+const Container = styled.div`
+    background-color: ${props => props.theme.bgColor};
+`;
+const H1 = styled.h1`
+    color: ${props => props.theme.textColor};
+`;
+
 
 function App() {
 
@@ -29,12 +39,9 @@ function App() {
     };
 
     return (
-        <div>
-            <form onSubmit={onSubmit}>
-                <input onChange={onChange} value={value} type="text" placeholder="username"/>
-                <button>Log in</button>
-            </form>
-        </div>
+        <Container>
+            <H1>Hello</H1>
+        </Container>
     )
 
 }
