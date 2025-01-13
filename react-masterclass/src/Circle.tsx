@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import {useState} from "react";
 
 interface ContainerProps {
     bgColor: string;
@@ -27,7 +28,15 @@ interface CircleProps {
     text?: string;
 }
 
+// 3-4
+//  타입스크립트가 state의 초기값을 기준으로 추측해서 타입을 추론해낸다.
+// 물론 number로 시작해서 string이 될 수 도있다.
+//  const [value, setValue] = useState<number|string>(0); --> number도 되고 string도 된다는 의미.
 function Circle({bgColor, borderColor, text = "default text"}: CircleProps){
+
+    const [counter, setCounter] = useState(1);
+    const [value, setValue] = useState<number|string>(0);
+
     return <Container bgColor={bgColor} borderColor={borderColor ?? bgColor}>{text}</Container>;
 }
 
