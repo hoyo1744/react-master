@@ -8,13 +8,13 @@ import Coin from "./Coin";
 function Router(){
     return <BrowserRouter>
         <Switch>
-            <Route path="/:coinId">
-                <Coin/>
-
-            </Route>
             <Route path="/">
                 <Coins/>
             </Route>
+            <Route path="/:coinId">
+                <Coin/>
+            </Route>
+
 
         </Switch>
     </BrowserRouter>
