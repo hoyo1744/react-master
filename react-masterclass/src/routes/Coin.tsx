@@ -152,43 +152,14 @@ interface PriceData {
 
 
 function Coin() {
-    // const [loading, setLoading] = useState(true);
     const {coinId} = useParams<RouteParams>();
     const {state} = useLocation<RouteState>();
-    // const [info, setInfo] = useState<InfoData>();
-    // const [priceInfo, setPriceInfo] = useState<PriceData>();
 
     const {isLoading: infoLoading, data:infoData} = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
     const {isLoading: tickersLoading, data:tickersData} = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId));
 
-    // 만약 우리가 /:coinId/price라는 url에 있다면 priceMatch가 알려준다.
     const priceMatch =useRouteMatch("/:coinId/price");
     const chartMatch =useRouteMatch("/:coinId/chart");
-    // console.log(priceMatch);
-    // console.log(chartMatch);
-
-
-    // ()() 으로 써주면 즉시 실행된다. 왜일까?
-    // useEffect(() => {
-    //     (async() => {
-    //         const infoData =
-    //             await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`))
-    //                 .json();
-    //         const priceData = await(
-    //             await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`))
-    //             .json();
-    //
-    //         console.log(infoData);
-    //         console.log(priceData);
-    //
-    //         setInfo(infoData);
-    //         setPriceInfo(priceData);
-    //         setLoading(false);
-    //
-    //     })();
-    //
-    // }, [coinId]);
-
 
 
     const loading = infoLoading || tickersLoading;
@@ -254,7 +225,7 @@ function Coin() {
                         <Price/>
                     </Route>
                     <Route path={`/:coinId/chart`}>
-                        <Chart/>
+                        <Chart coinId={coinId}/>
                     </Route>
                 </Switch>
             </>
