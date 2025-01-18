@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Switch, Route, useLocation, useParams} from "react-router-dom";
+import {Switch, Route, useLocation, useParams, Link, useRouteMatch} from "react-router-dom";
 import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
@@ -62,6 +62,28 @@ const OverviewItem = styled.div`
 
 const Description = styled.p`
     margin: 20px 0px;
+    
+`;
+
+const Tabs = styled.div`
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    margin: 25px 0px;
+    gap: 10px;
+`;
+
+const Tab = styled.span<{ isActive: boolean}>`
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 7px 0px;
+    border-radius: 10px;
+    color:${props => props.isActive ? props.theme.accentColor : props.theme.textColor};
+    a {
+        display: block;
+    }
     
 `;
 
@@ -134,6 +156,12 @@ function Coin() {
     const [info, setInfo] = useState<InfoData>();
     const [priceInfo, setPriceInfo] = useState<PriceData>();
 
+    // 만약 우리가 /:coinId/price라는 url에 있다면 priceMatch가 알려준다.
+    const priceMatch =useRouteMatch("/:coinId/price");
+    const chartMatch =useRouteMatch("/:coinId/chart");
+    console.log(priceMatch);
+    console.log(chartMatch);
+
 
     // ()() 으로 써주면 즉시 실행된다. 왜일까?
     useEffect(() => {
@@ -194,13 +222,32 @@ function Coin() {
                         <span>{priceInfo?.max_supply}</span>
                     </OverviewItem>
                 </Overview>
+                {/*anchor는 페이지를 완전 새로고침하기 때문에 사용하지 않고, Link를 쓴다.*/}
+
+
+
+                <Tabs>
+                    <Tab isActive={chartMatch !== null}>
+                        <Link to={`/${coinId}/chart`}>
+                            Chart
+                        </Link>
+                    </Tab>
+                    <Tab isActive={priceMatch !== null}>
+                        <Link to={`/${coinId}/price`}>
+                            Price
+                        </Link>
+                    </Tab>
+
+                </Tabs>
 
             {/*    nested router 사용 코드*/}
                 <Switch>
-                    <Route path={`/${coinId}/price`}>
+                    {/*아래의 2개 코드 모두 잘 동작함.*/}
+                    {/*<Route path={`/${coinId}/price`}>*/}
+                    <Route path={`/:coinId/price`}>
                         <Price/>
                     </Route>
-                    <Route path={`/${coinId}/chart`}>
+                    <Route path={`/:coinId/chart`}>
                         <Chart/>
                     </Route>
                 </Switch>
