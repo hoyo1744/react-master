@@ -1,6 +1,8 @@
-import {useEffect, useState} from "react";
-import {useLocation, useParams} from "react-router-dom";
+import React, {useEffect, useState} from "react";
+import {Switch, Route, useLocation, useParams} from "react-router-dom";
 import styled from "styled-components";
+import Price from "./Price";
+import Chart from "./Chart";
 
 
 // const {coinId} = useParams<{coinId:string}>(); 처럼 params으로 넘어온값이 어떤타입인지 타입스크립트에게 알려줘야함. 또는 인터페이스를 사용해도됨.
@@ -37,11 +39,34 @@ const Header = styled.header`
     align-items: center;
 `;
 
+const Overview = styled.div`
+    display: flex;
+    justify-content: space-between;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 20px;
+    border-radius: 10px;
+`;
+
+const OverviewItem = styled.div`
+    display: flex;
+    flex-direction: column;
+    aligh-items: center;
+    
+    span:first-child{
+        font-size: 10px;
+        font-weight: 400;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+    }
+`;
+
+const Description = styled.p`
+    margin: 20px 0px;
+    
+`;
+
 interface RouteState {
     name: string;
-
-
-
 }
 
 // 개발자 도구에서 전역 변수 저장 -> Object.keys(변수명).join() 하면 키값만 가져와진다. 미쳤군?
@@ -125,10 +150,11 @@ function Coin() {
 
             setInfo(infoData);
             setPriceInfo(priceData);
+            setLoading(false);
 
         })();
 
-    }, []);
+    }, [coinId]);
 
 
 
@@ -138,9 +164,48 @@ function Coin() {
                 {/*state값은 외부에서 전달한 값이기 때문에 바로 Coin 화면으로 접속하면 에러가 발생한다.
                 그래서 state? 라는 표현으로 삼항연산자를 표현한다.*/}
                 {/*<Title>{state?.name || "Loading"}</Title>*/}
-                <Title>{state?.name || "Loading"}</Title>
+                <Title>{state?.name ? state.name : loading ? "Loading..." : info?.name}</Title>
             </Header>
-            {loading ? <Loader>Loading...</Loader> : null}
+            {loading ? <Loader>Loading...</Loader> :
+            <>
+                <Overview>
+                    <OverviewItem>
+                        <span>Rank:</span>
+                        <span>{info?.rank}</span>
+                    </OverviewItem>
+                    <OverviewItem>
+                        <span>Symbol:</span>
+                        <span>${info?.symbol}</span>
+                    </OverviewItem>
+                    <OverviewItem>
+                        <span>Open Source:</span>
+                        <span>{info?.open_source}</span>
+                    </OverviewItem>
+                </Overview>
+                <Description>{info?.description}</Description>
+                <Overview>
+                    <OverviewItem>
+                        <span>Total Suply:</span>
+                        <span>{priceInfo?.total_supply}</span>
+                    </OverviewItem>
+                    <OverviewItem>
+                        <span>Max supply:</span>
+                        {/*priceInfo?.max_supply에서 ?는 priceInfo가 존재할 경우에만 max_supply를 찾는다는 의미가됨. 만약에 데이터가 없다? 그러면 undefined가 되겠지*/}
+                        <span>{priceInfo?.max_supply}</span>
+                    </OverviewItem>
+                </Overview>
+
+            {/*    nested router 사용 코드*/}
+                <Switch>
+                    <Route path={`/${coinId}/price`}>
+                        <Price/>
+                    </Route>
+                    <Route path={`/${coinId}/chart`}>
+                        <Chart/>
+                    </Route>
+                </Switch>
+            </>
+            }
         </Container>
     );
 }
