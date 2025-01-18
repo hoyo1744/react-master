@@ -2,6 +2,7 @@ import React from "react";
 import Router from "./routes/Router";
 import {createGlobalStyle} from "styled-components";
 import {ReactQueryDevtools} from "react-query/devtools";
+import { HelmetProvider } from "react-helmet-async";
 
 // 5-1 css 리셋 방법
 // createGlobalStyle() 이걸 사용하자 -> 이걸 이용한 컴포넌트를 전체 컴포넌트에 적용시켜줌.
@@ -86,7 +87,9 @@ function App() {
     return (
     <>
         <GlobalStyle />
+        <HelmetProvider>
         <Router />
+        </HelmetProvider>
         <ReactQueryDevtools initialIsOpen={true}/>
     </>
     );

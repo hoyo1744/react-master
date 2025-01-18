@@ -2,6 +2,9 @@ import {useParams} from "react-router-dom";
 import {useQuery} from "react-query";
 import {fetchCoinHistory} from "../api";
 import ApexChart from "react-apexcharts";
+import { Helmet } from "react-helmet-async";
+import React from "react";
+import styled from "styled-components";
 
 // 2차 방법: props로 전달하기
 interface ChartProps {
@@ -20,13 +23,20 @@ interface IHistoricalData {
 
 }
 
+const Title = styled.h1`
+    font-size: 48px;
+    text-align: center;
+    color: ${props => props.theme.accentColor};
+`;
+
+
 function Chart({coinId}: ChartProps) {
 
     // 1차 방법: url에서 정보가져오기
     // const params = useParams();
     // console.log(params);
 
-    const {isLoading, data} = useQuery<IHistoricalData[]>(["ohlcv", coinId], () => fetchCoinHistory(coinId));
+    const {isLoading, data} = useQuery<IHistoricalData[]>(["ohlcv", coinId], () => fetchCoinHistory(coinId), {refetchInterval:10000});
 
     return (
         <div>

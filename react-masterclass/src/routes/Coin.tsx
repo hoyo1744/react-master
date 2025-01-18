@@ -5,6 +5,7 @@ import Price from "./Price";
 import Chart from "./Chart";
 import {useQuery} from "react-query";
 import {fetchCoinInfo, fetchCoinTickers} from "../api";
+import {Helmet} from "react-helmet-async";
 
 
 // const {coinId} = useParams<{coinId:string}>(); 처럼 params으로 넘어온값이 어떤타입인지 타입스크립트에게 알려줘야함. 또는 인터페이스를 사용해도됨.
@@ -156,7 +157,7 @@ function Coin() {
     const {state} = useLocation<RouteState>();
 
     const {isLoading: infoLoading, data:infoData} = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
-    const {isLoading: tickersLoading, data:tickersData} = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId));
+    const {isLoading: tickersLoading, data:tickersData} = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId), {refetchInterval: 100000,});
 
     const priceMatch =useRouteMatch("/:coinId/price");
     const chartMatch =useRouteMatch("/:coinId/chart");
@@ -165,6 +166,9 @@ function Coin() {
     const loading = infoLoading || tickersLoading;
     return (
         <Container>
+            <Helmet>
+                <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
+            </Helmet>
             <Header>
                 {/*state값은 외부에서 전달한 값이기 때문에 바로 Coin 화면으로 접속하면 에러가 발생한다.
                 그래서 state? 라는 표현으로 삼항연산자를 표현한다.*/}
@@ -183,8 +187,8 @@ function Coin() {
                         <span>${infoData?.symbol}</span>
                     </OverviewItem>
                     <OverviewItem>
-                        <span>Open Source:</span>
-                        <span>{infoData?.open_source}</span>
+                        <span>Price:</span>
+                        <span>{tickersData?.quotes.USD.price}</span>
                     </OverviewItem>
                 </Overview>
                 <Description>{infoData?.description}</Description>
