@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useLocation, useParams} from "react-router-dom";
 import styled from "styled-components";
 
@@ -46,7 +46,29 @@ function Coin() {
     const [loading, setLoading] = useState(true);
     const {coinId} = useParams<RouteParams>();
     const {state} = useLocation<RouteState>();
-    console.log((state.name))
+    const [info, setInfo] = useState({});
+    const [priceInfo, setPriceInfo] = useState({});
+
+
+    // ()() 으로 써주면 즉시 실행된다. 왜일까?
+    useEffect(() => {
+        (async() => {
+            const infoData =
+                await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`))
+                    .json();
+            const priceData = await(
+                await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`))
+                .json();
+
+            console.log(infoData);
+            console.log(priceData);
+
+            setInfo(infoData);
+            setPriceInfo(priceData);
+
+        })();
+
+    }, []);
 
 
 
