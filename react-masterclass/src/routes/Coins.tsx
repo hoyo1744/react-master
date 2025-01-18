@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import {Link} from "react-router-dom";
 import {useEffect, useState} from "react";
+import {useQuery} from "react-query";
+import {fetchCoins} from "../api";
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -60,7 +62,7 @@ const Img = styled.img`
     margin-right: 10px;
 `;
 
-interface CoinInterface {
+interface ICoin {
     id: string
     name: string,
     symbol: string,
@@ -75,21 +77,26 @@ interface CoinInterface {
 
 //  coinInterface[]는 coins가 어떤타입으로 이루어졌는지 타입스크립트한테 말해주는것
 function Coins() {
-    const [coins, setCoins] = useState<CoinInterface[]>([]);
-
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        (async() => {
-            const response = await fetch("https://api.coinpaprika.com/v1/coins");
-            const json = await response.json();
-            // console.log(json);
-
-            setCoins(json.slice(0, 100))
-            setLoading(false);
-        })();
-    }, []);
-    console.log(coins);
+    // useQuery의 첫번째인자는 고유한 식별자, 두번째인자가 api 함수
+    // useQuery는 리턴시 isLoading boolean 데이터를 반환함.
+    // 두번째 데이터에 api 결과를 저장해줌.
+    const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins);
+    // react-query를 사용하면 아래의 코드가 압축됨.
+    // const [coins, setCoins] = useState<ICoin[]>([]);
+    //
+    // const [loading, setLoading] = useState(true);
+    //
+    // useEffect(() => {
+    //     (async() => {
+    //         const response = await fetch("https://api.coinpaprika.com/v1/coins");
+    //         const json = await response.json();
+    //         // console.log(json);
+    //
+    //         setCoins(json.slice(0, 100))
+    //         setLoading(false);
+    //     })();
+    // }, []);
+    // console.log(coins);
 
 
     return (
@@ -97,9 +104,9 @@ function Coins() {
             <Header>
                 <Title>코인</Title>
             </Header>
-            {loading ? <Loader>"Loading..."</Loader> :
+            {isLoading ? <Loader>"Loading..."</Loader> :
             <CoinsList>
-                {coins.map((coin) => (
+                {data?.slice(0, 100).map((coin) => (
                     <Coin key={coin.id}>
                         {/*아래의 내용을 비하인더씬이라고 표현하나보다. state라는 변수에 넣어서 전달하고있군.*/}
                         {/*<Link to={`/${coin.id}`}>*/}
