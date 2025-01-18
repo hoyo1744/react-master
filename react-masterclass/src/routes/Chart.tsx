@@ -10,7 +10,7 @@ interface ChartProps {
 
 interface IHistoricalData {
     time_open: string;
-    time_close: string;
+    time_close: number;
     open: number;
     high: number;
     low: number;
@@ -63,7 +63,9 @@ function Chart({coinId}: ChartProps) {
                                                                  },
                                                                  axisBorder:{
                                                                      show: false,
-                                                                 }
+                                                                 },
+                                                                 categories: data?.map((price) =>  new Date(price.time_close * 1000).toUTCString()),
+                                                                 type: "datetime",
                                                              },
                                                              yaxis:{
                                                                  show: false
@@ -71,6 +73,16 @@ function Chart({coinId}: ChartProps) {
                                                              stroke: {
                                                                  curve: "smooth",
                                                                  width: 5,
+                                                             },
+                                                             fill:{
+                                                                 type:"gradient",
+                                                                 gradient:{gradientToColors:["blue"], stops: [0, 100]},
+                                                             },
+                                                             colors:["red"],
+                                                             tooltip:{
+                                                                 y:{
+                                                                     formatter: (value) => `$${value.toFixed(2)}`,
+                                                                 }
                                                              }
                                                          }}/>}
         </div>
