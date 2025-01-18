@@ -9,9 +9,9 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
-    height: 10vh;
+    height: 15vh;
     display: flex;
-    justify-items: center;
+    justify-content: center;
     align-items: center;
 `;
 
@@ -27,8 +27,10 @@ const Coin = styled.li`
     margin-bottom: 10px;
 
     a {
+        display: flex;
+        align-items: center;
+        padding: 20px;
         transition: color 0.2s ease-in;
-        display: block;
     }
 
     &:hover {
@@ -43,12 +45,19 @@ const Coin = styled.li`
 
 const Title = styled.h1`
     font-size: 48px;
+    text-align: center;
     color: ${props => props.theme.accentColor};
 `;
 
 const Loader = styled.span`
     text-align: center;
     display: block;
+`;
+
+const Img = styled.img`
+    width: 35px;
+    height: 35px;
+    margin-right: 10px;
 `;
 
 interface CoinInterface {
@@ -60,6 +69,8 @@ interface CoinInterface {
     is_active: boolean,
     type: string,
 }
+
+
 
 
 //  coinInterface[]는 coins가 어떤타입으로 이루어졌는지 타입스크립트한테 말해주는것
@@ -90,7 +101,18 @@ function Coins() {
             <CoinsList>
                 {coins.map((coin) => (
                     <Coin key={coin.id}>
-                        <Link to={`/${coin.id}`}>{coin.name} &rarr;</Link>
+                        {/*아래의 내용을 비하인더씬이라고 표현하나보다. state라는 변수에 넣어서 전달하고있군.*/}
+                        {/*<Link to={`/${coin.id}`}>*/}
+                        <Link to={{
+                            pathname: `/${coin.id}`,
+                            state: { name: coin.name}
+
+                        }}>
+                            <Img
+                                src={`https://static.coinpaprika.com/coin/${coin.id}/logo.png`}
+                            />
+                            {coin.name} &rarr;</Link>
+
                     </Coin>
                 ))}
             </CoinsList>
