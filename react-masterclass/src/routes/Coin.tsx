@@ -3,6 +3,8 @@ import {Switch, Route, useLocation, useParams, Link, useRouteMatch} from "react-
 import styled from "styled-components";
 import Price from "./Price";
 import Chart from "./Chart";
+import {useQuery} from "react-query";
+import {fetchCoinInfo, fetchCoinTickers} from "../api";
 
 
 // const {coinId} = useParams<{coinId:string}>(); 처럼 params으로 넘어온값이 어떤타입인지 타입스크립트에게 알려줘야함. 또는 인터페이스를 사용해도됨.
@@ -150,76 +152,51 @@ interface PriceData {
 
 
 function Coin() {
-    const [loading, setLoading] = useState(true);
     const {coinId} = useParams<RouteParams>();
     const {state} = useLocation<RouteState>();
-    const [info, setInfo] = useState<InfoData>();
-    const [priceInfo, setPriceInfo] = useState<PriceData>();
 
-    // 만약 우리가 /:coinId/price라는 url에 있다면 priceMatch가 알려준다.
+    const {isLoading: infoLoading, data:infoData} = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
+    const {isLoading: tickersLoading, data:tickersData} = useQuery<PriceData>(["tickers", coinId], () => fetchCoinTickers(coinId));
+
     const priceMatch =useRouteMatch("/:coinId/price");
     const chartMatch =useRouteMatch("/:coinId/chart");
-    console.log(priceMatch);
-    console.log(chartMatch);
 
 
-    // ()() 으로 써주면 즉시 실행된다. 왜일까?
-    useEffect(() => {
-        (async() => {
-            const infoData =
-                await (await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`))
-                    .json();
-            const priceData = await(
-                await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`))
-                .json();
-
-            console.log(infoData);
-            console.log(priceData);
-
-            setInfo(infoData);
-            setPriceInfo(priceData);
-            setLoading(false);
-
-        })();
-
-    }, [coinId]);
-
-
-
+    const loading = infoLoading || tickersLoading;
     return (
         <Container>
             <Header>
                 {/*state값은 외부에서 전달한 값이기 때문에 바로 Coin 화면으로 접속하면 에러가 발생한다.
                 그래서 state? 라는 표현으로 삼항연산자를 표현한다.*/}
                 {/*<Title>{state?.name || "Loading"}</Title>*/}
-                <Title>{state?.name ? state.name : loading ? "Loading..." : info?.name}</Title>
+                <Title>{state?.name ? state.name : loading ? "Loading..." : infoData?.name}</Title>
             </Header>
             {loading ? <Loader>Loading...</Loader> :
             <>
                 <Overview>
                     <OverviewItem>
                         <span>Rank:</span>
-                        <span>{info?.rank}</span>
+                        <span>{infoData?.rank}</span>
                     </OverviewItem>
                     <OverviewItem>
                         <span>Symbol:</span>
-                        <span>${info?.symbol}</span>
+                        <span>${infoData?.symbol}</span>
                     </OverviewItem>
                     <OverviewItem>
                         <span>Open Source:</span>
-                        <span>{info?.open_source}</span>
+                        <span>{infoData?.open_source}</span>
                     </OverviewItem>
                 </Overview>
-                <Description>{info?.description}</Description>
+                <Description>{infoData?.description}</Description>
                 <Overview>
                     <OverviewItem>
                         <span>Total Suply:</span>
-                        <span>{priceInfo?.total_supply}</span>
+                        <span>{tickersData?.total_supply}</span>
                     </OverviewItem>
                     <OverviewItem>
                         <span>Max supply:</span>
                         {/*priceInfo?.max_supply에서 ?는 priceInfo가 존재할 경우에만 max_supply를 찾는다는 의미가됨. 만약에 데이터가 없다? 그러면 undefined가 되겠지*/}
-                        <span>{priceInfo?.max_supply}</span>
+                        <span>{tickersData?.max_supply}</span>
                     </OverviewItem>
                 </Overview>
                 {/*anchor는 페이지를 완전 새로고침하기 때문에 사용하지 않고, Link를 쓴다.*/}
@@ -248,7 +225,7 @@ function Coin() {
                         <Price/>
                     </Route>
                     <Route path={`/:coinId/chart`}>
-                        <Chart/>
+                        <Chart coinId={coinId}/>
                     </Route>
                 </Switch>
             </>
