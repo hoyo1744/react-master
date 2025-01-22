@@ -1,8 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 import Router from "./routes/Router";
-import {createGlobalStyle} from "styled-components";
+import {createGlobalStyle, ThemeProvider} from "styled-components";
 import {ReactQueryDevtools} from "react-query/devtools";
-import { HelmetProvider } from "react-helmet-async";
+import {HelmetProvider} from "react-helmet-async";
+import {darkTheme, lightTheme} from "./theme";
 
 // 5-1 css 리셋 방법
 // createGlobalStyle() 이걸 사용하자 -> 이걸 이용한 컴포넌트를 전체 컴포넌트에 적용시켜줌.
@@ -11,6 +12,7 @@ import { HelmetProvider } from "react-helmet-async";
 const GlobalStyle = createGlobalStyle`
     //https://fonts.google.com/selection/embed
     @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
+
     html, body, div, span, applet, object, iframe,
     h1, h2, h3, h4, h5, h6, p, blockquote, pre,
     a, abbr, acronym, address, big, cite, code,
@@ -65,14 +67,17 @@ const GlobalStyle = createGlobalStyle`
         border-collapse: collapse;
         border-spacing: 0;
     }
+
     * {
         box-sizing: border-box;
     }
+
     body {
         font-family: 'Source Sans Pro', sans-serif;
         background-color: ${props => props.theme.bgColor};
         color: ${props => props.theme.textColor}
     }
+
     a {
         text-decoration: none;
         color: inherit;
@@ -84,14 +89,24 @@ const GlobalStyle = createGlobalStyle`
 // 그래서 Fragment를 사용하자. 고스트 컴포넌트라고도 함.<>
 
 function App() {
+
+    // state를 사용하려고 index에서 App으로 ThemeProvider를 가져옴.
+    const [isDark, setIsDark] = useState(false);
+
+    const toggleDark = () => {
+        setIsDark((current) => !current)
+    }
     return (
-    <>
-        <GlobalStyle />
-        <HelmetProvider>
-        <Router />
-        </HelmetProvider>
-        <ReactQueryDevtools initialIsOpen={true}/>
-    </>
+        <>
+            <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
+                <button onClick={toggleDark}>Toggle Mode</button>
+                <GlobalStyle/>
+                <HelmetProvider>
+                    <Router/>
+                </HelmetProvider>
+                <ReactQueryDevtools initialIsOpen={true}/>
+            </ThemeProvider>
+        </>
     );
 }
 

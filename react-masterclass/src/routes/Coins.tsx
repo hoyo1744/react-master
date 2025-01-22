@@ -24,7 +24,7 @@ const CoinsList = styled.ul`
 
 const Coin = styled.li`
     background-color: white;
-    color: ${props => props.theme.bgColor};
+    color: ${props => props.theme.textColor};
     padding: 20px;
     border-radius: 15px;
     margin-bottom: 10px;
@@ -103,7 +103,7 @@ function Coins() {
     return (
         <Container>
             <Helmet>
-                <Title>코인</Title>
+                <title>코인</title>
             </Helmet>
             <Header>
                 <Title>코인</Title>

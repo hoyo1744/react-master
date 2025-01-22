@@ -14,7 +14,6 @@ function Router(){
             <Route path="/">
                 <Coins/>
             </Route>
-
         </Switch>
     </BrowserRouter>
 
