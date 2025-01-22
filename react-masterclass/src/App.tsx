@@ -99,15 +99,21 @@ function App() {
     return (
         <>
             <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
-                <button onClick={toggleDark}>Toggle Mode</button>
                 <GlobalStyle/>
                 <HelmetProvider>
-                    <Router/>
+                    {/*Coin에서 사용하기 위해서 App->Router->Coin으로 전달될 예정임.*/}
+                    <Router isDark={isDark} toggleDark={toggleDark}/>
                 </HelmetProvider>
                 <ReactQueryDevtools initialIsOpen={true}/>
             </ThemeProvider>
         </>
     );
 }
+
+// 좋지 않은 방법임. 그런데 이게 global state를 의미함.즉, 싱글톤 같은 얘를 global state라고 할 수 있겠다.
+// global state는 어플리케이션 전체에서 공유되는 state를 의미함.
+// App (isDark, modifierFn)
+// -> Router -> Coin (isDark) -> Chart(isDark)
+// -> Router -> Coins (modifier)
 
 export default App;

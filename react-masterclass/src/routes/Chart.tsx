@@ -9,6 +9,7 @@ import styled from "styled-components";
 // 2차 방법: props로 전달하기
 interface ChartProps {
     coinId: string;
+    isDark: boolean;
 }
 
 interface IHistoricalData {
@@ -30,7 +31,7 @@ const Title = styled.h1`
 `;
 
 
-function Chart({coinId}: ChartProps) {
+function Chart({coinId, isDark}: ChartProps) {
 
     // 1차 방법: url에서 정보가져오기
     // const params = useParams();
@@ -50,8 +51,7 @@ function Chart({coinId}: ChartProps) {
                                                          options={{
 
                                                              theme:{
-                                                                 mode: "dark"
-
+                                                                 mode: isDark ? "dark" : "light",
                                                              },
                                                              chart: {
                                                                  height: 300,

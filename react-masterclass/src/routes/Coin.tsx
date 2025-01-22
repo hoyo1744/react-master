@@ -156,8 +156,12 @@ interface PriceData {
     };
 }
 
+interface ICoinProps {
+    isDark: boolean;
+}
 
-function Coin() {
+
+function Coin({isDark} : ICoinProps) {
     const {coinId} = useParams<RouteParams>();
     const {state} = useLocation<RouteState>();
 
@@ -196,7 +200,7 @@ function Coin() {
                         </OverviewItem>
                         <OverviewItem>
                             <span>Price:</span>
-                            <span>{tickersData?.quotes.USD.price}</span>
+                            <span>{tickersData?.quotes?.USD?.price?.toFixed(3)}</span>
                         </OverviewItem>
                     </Overview>
                     <Description>{infoData?.description}</Description>
@@ -239,7 +243,7 @@ function Coin() {
                             <Price/>
                         </Route>
                         <Route path={`/:coinId/chart`}>
-                            <Chart coinId={coinId}/>
+                            <Chart isDark={isDark} coinId={coinId}/>
                         </Route>
 
                     </Switch>
