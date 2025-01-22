@@ -76,12 +76,12 @@ interface ICoin {
 
 
 interface IConsProps {
-    toggleDark: () => void;
+
 
 }
 
 //  coinInterface[]는 coins가 어떤타입으로 이루어졌는지 타입스크립트한테 말해주는것
-function Coins({toggleDark}: IConsProps) {
+function Coins({}: IConsProps) {
     // useQuery의 첫번째인자는 고유한 식별자, 두번째인자가 api 함수
     // useQuery는 리턴시 isLoading boolean 데이터를 반환함.
     // 두번째 데이터에 api 결과를 저장해줌.
@@ -111,7 +111,6 @@ function Coins({toggleDark}: IConsProps) {
             </Helmet>
             <Header>
                 <Title>코인</Title>
-                <button onClick={toggleDark}>Toggle Mode</button>
             </Header>
             {isLoading ? <Loader>"Loading..."</Loader> :
             <CoinsList>

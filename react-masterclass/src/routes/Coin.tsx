@@ -157,11 +157,11 @@ interface PriceData {
 }
 
 interface ICoinProps {
-    isDark: boolean;
+
 }
 
 
-function Coin({isDark} : ICoinProps) {
+function Coin({} : ICoinProps) {
     const {coinId} = useParams<RouteParams>();
     const {state} = useLocation<RouteState>();
 

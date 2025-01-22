@@ -5,11 +5,12 @@ import ApexChart from "react-apexcharts";
 import { Helmet } from "react-helmet-async";
 import React from "react";
 import styled from "styled-components";
+import {useRecoilValue} from "recoil";
+import {isDarkAtom} from "../atom";
 
 // 2차 방법: props로 전달하기
 interface ChartProps {
     coinId: string;
-    isDark: boolean;
 }
 
 interface IHistoricalData {
@@ -31,11 +32,13 @@ const Title = styled.h1`
 `;
 
 
-function Chart({coinId, isDark}: ChartProps) {
+function Chart({coinId}: ChartProps) {
 
     // 1차 방법: url에서 정보가져오기
     // const params = useParams();
     // console.log(params);
+
+    const isDark = useRecoilValue(isDarkAtom)
 
     const {isLoading, data} = useQuery<IHistoricalData[]>(["ohlcv", coinId], () => fetchCoinHistory(coinId), {refetchInterval:10000});
 

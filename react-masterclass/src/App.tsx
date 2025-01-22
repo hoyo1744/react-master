@@ -4,6 +4,8 @@ import {createGlobalStyle, ThemeProvider} from "styled-components";
 import {ReactQueryDevtools} from "react-query/devtools";
 import {HelmetProvider} from "react-helmet-async";
 import {darkTheme, lightTheme} from "./theme";
+import {useRecoilValue} from "recoil";
+import {isDarkAtom} from "./atom";
 
 // 5-1 css 리셋 방법
 // createGlobalStyle() 이걸 사용하자 -> 이걸 이용한 컴포넌트를 전체 컴포넌트에 적용시켜줌.
@@ -90,19 +92,15 @@ const GlobalStyle = createGlobalStyle`
 
 function App() {
 
-    // state를 사용하려고 index에서 App으로 ThemeProvider를 가져옴.
-    const [isDark, setIsDark] = useState(false);
+    const isDark = useRecoilValue(isDarkAtom);
 
-    const toggleDark = () => {
-        setIsDark((current) => !current)
-    }
     return (
         <>
             <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
                 <GlobalStyle/>
                 <HelmetProvider>
                     {/*Coin에서 사용하기 위해서 App->Router->Coin으로 전달될 예정임.*/}
-                    <Router isDark={isDark} toggleDark={toggleDark}/>
+                    <Router />
                 </HelmetProvider>
                 <ReactQueryDevtools initialIsOpen={true}/>
             </ThemeProvider>
