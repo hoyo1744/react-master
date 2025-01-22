@@ -5,16 +5,23 @@ import Coin from "./Coin";
 
 // Switch는 한번에 하나의 Router만 렌더링할 수 있는 방법
 
-function Router(){
+interface IRouterProps {
+    // 함수도 아래와 같이 형태를 명시해줘야함.
+    toggleDark: () => void;
+    isDark: boolean;
+}
+
+
+
+function Router({toggleDark, isDark}: IRouterProps){
     return <BrowserRouter>
         <Switch>
             <Route path="/:coinId">
-                <Coin />
+                <Coin isDark={isDark} />
             </Route>
             <Route path="/">
-                <Coins/>
+                <Coins  toggleDark={toggleDark}/>
             </Route>
-
         </Switch>
     </BrowserRouter>
 
