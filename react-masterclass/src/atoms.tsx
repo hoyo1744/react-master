@@ -1,9 +1,17 @@
 import {atom, selector} from "recoil";
 
+// type categories = "DONE" | "DOING" | "TO_DO"
+
+export enum Categories {
+    "TO_DO" = "TO_DO",
+    "DOING" = "DOING",
+    "DONE" = "DONE",
+}
+
 export interface IToDo {
     text: string;
     id: number,
-    category: "DONE" | "DOING" | "TO_DO";
+    category: Categories;
 
 }
 
@@ -12,9 +20,9 @@ export const toDosState = atom<IToDo[]>({
     default: [],
 });
 
-export const categoryState = atom({
+export const categoryState = atom<Categories>({
     key:"category",
-    default: "TO_DO",
+    default: Categories.TO_DO,
 });
 
 // selector의 요점은 atom 을 가져다가(atom은 단순한 값 또는 배열임) output을 변형해서 그 결과를 반환하는것.

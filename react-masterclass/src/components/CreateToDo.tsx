@@ -1,6 +1,6 @@
 import {useForm} from "react-hook-form";
-import {useSetRecoilState} from "recoil";
-import {toDosState} from "../atoms";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {categoryState, toDosState} from "../atoms";
 
 
 interface IForm {
@@ -12,13 +12,15 @@ function CreateToDo(){
 
     const {register, handleSubmit, setValue} = useForm<IForm>();
 
+    const category = useRecoilValue(categoryState);
+
     const setToDos = useSetRecoilState(toDosState);
 
     const handleValid = ({toDo}: IForm) => {
         console.log('add to do', toDo);
 
         // [{text:toDo, id:Date.now(), category: "TO_DO" }, ...oldToDos] 이 코드는 배열에 push하는 코드를 의미함.
-        setToDos(oldToDos => [{text: toDo, id: Date.now(), category: "TO_DO"}, ...oldToDos])
+        setToDos(oldToDos => [{text: toDo, id: Date.now(), category: category}, ...oldToDos])
         // reset을 의미함.
         setValue("toDo", "");
     }

@@ -1,5 +1,5 @@
 import React from "react";
-import {IToDo, toDosState} from "../atoms";
+import {Categories, IToDo, toDosState} from "../atoms";
 import {useSetRecoilState} from "recoil";
 
 function ToDo({text, category, id}:IToDo) {
@@ -34,9 +34,9 @@ function ToDo({text, category, id}:IToDo) {
             {/*&& 이게 무슨 문법이지? -> 단축연산자*/}
             {/*onClick에서 인자를 넘기기 위한 방법은 아래와 같음.*/}
             {/*{category !== "DOING" && <button name="DOING" onClick={() => onClick("DOING")}>DOING</button>}*/}
-            {category !== "DOING" && <button name="DOING" onClick={onClick}>DOING</button>}
-            {category !== "TO_DO" && <button name="TO_DO" onClick={onClick}>To Do</button>}
-            {category !== "DONE" && <button name="DONE" onClick={onClick}>DONE</button>}
+            {category !== Categories.DOING && <button name={Categories.DOING} onClick={onClick}>DOING</button>}
+            {category !== Categories.TO_DO && <button name={Categories.TO_DO} onClick={onClick}>To Do</button>}
+            {category !== Categories.DONE && <button name={Categories.DONE} onClick={onClick}>DONE</button>}
         </li>
     )
 }
