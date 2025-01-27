@@ -1,63 +1,37 @@
-import {useState} from "react";
+import React from "react";
 
-import {useForm} from "react-hook-form";
-import {atom, useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
+import {useRecoilState, useRecoilValue} from "recoil";
+import {Categories, categoryState, toDoSelector, toDosState} from "../atoms";
+import CreateToDo from "./CreateToDo";
+import ToDo from "./ToDo";
 
-
-const toDosState = atom<IToDo[]>({
-    key: "toDo",
-    default: [],
-});
-
-interface IToDo {
-    text: string;
-    id: number,
-    category: "DONE" | "DOING" | "TO_DO";
-
-}
-
-interface iForm {
-    toDo: string,
-
-}
 
 function ToDoList() {
 
     // useRecoilState의 첫번째 인자는 값, 두번째인자는 변경 함수를 제공함.
-    const [toDos, setToDos] = useRecoilState(toDosState);
+    // const toDos = useRecoilValue(toDosState);
+    const toDos = useRecoilValue(toDoSelector);
+    const [category, setCategory] = useRecoilState(categoryState);
 
-    // const value = useRecoilValue(toDosState);
-    // const modFn = useSetRecoilState(toDosState);
-    const {register, handleSubmit, setValue} = useForm<iForm>();
+    const onInput = (event: React.FormEvent<HTMLSelectElement>) => {
+        setCategory(event.currentTarget.value as any);
+    };
 
-    const handleValid = ({toDo}: iForm) => {
-        console.log('add to do', toDo);
-
-        // [{text:toDo, id:Date.now(), category: "TO_DO" }, ...oldToDos] 이 코드는 배열에 push하는 코드를 의미함.
-        setToDos(oldToDos => [{text: toDo, id: Date.now(), category: "TO_DO"}, ...oldToDos])
-        // reset을 의미함.
-        setValue("toDo", "");
-    }
-
-    console.log(toDos);
+    console.log(category);
 
     return (
         <div>
             <h1>To Dos</h1>
             <hr/>
-            <form onSubmit={handleSubmit(handleValid)}>
-                <input  {...register("toDo", {
-                    required: "Please write a To Do",
-                })} placeholder="Write a todo "/>
-                <button>Add</button>
-            </form>
-            <ul>
-                {toDos.map(toDo =>
-                    <li key={toDo.id}>
-                        {toDo.text}
-                    </li>
-                )}
-            </ul>
+            <select value={category} onInput={onInput}>
+                <option value={Categories.TO_DO}>To Do</option>
+                <option value={Categories.DOING}>Doing</option>
+                <option value={Categories.DONE}>Done</option>
+            </select>
+            <CreateToDo/>
+            {toDos?.map(toDo =>
+                <ToDo key={toDo.id} {...toDo} />
+            )}
         </div>
     )
 }
