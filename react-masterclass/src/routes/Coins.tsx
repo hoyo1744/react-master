@@ -4,6 +4,8 @@ import React, {useEffect, useState} from "react";
 import {useQuery} from "react-query";
 import {fetchCoins} from "../api";
 import {Helmet} from "react-helmet";
+import {useSetRecoilState} from "recoil";
+import {isDarkAtom} from "../atom";
 
 const Container = styled.div`
     padding: 0px 20px;
@@ -82,26 +84,14 @@ interface IConsProps {
 
 //  coinInterface[]는 coins가 어떤타입으로 이루어졌는지 타입스크립트한테 말해주는것
 function Coins({}: IConsProps) {
-    // useQuery의 첫번째인자는 고유한 식별자, 두번째인자가 api 함수
-    // useQuery는 리턴시 isLoading boolean 데이터를 반환함.
-    // 두번째 데이터에 api 결과를 저장해줌.
+
     const {isLoading, data} = useQuery<ICoin[]>("allCoins", fetchCoins);
-    // react-query를 사용하면 아래의 코드가 압축됨.
-    // const [coins, setCoins] = useState<ICoin[]>([]);
-    //
-    // const [loading, setLoading] = useState(true);
-    //
-    // useEffect(() => {
-    //     (async() => {
-    //         const response = await fetch("https://api.coinpaprika.com/v1/coins");
-    //         const json = await response.json();
-    //         // console.log(json);
-    //
-    //         setCoins(json.slice(0, 100))
-    //         setLoading(false);
-    //     })();
-    // }, []);
-    // console.log(coins);
+
+    // Recoil값을 수정하는 방법
+    const setDarkAtom = useSetRecoilState(isDarkAtom);
+
+    const toggleDarkAtom = () => setDarkAtom( prev => !prev)
+
 
 
     return (
@@ -111,6 +101,7 @@ function Coins({}: IConsProps) {
             </Helmet>
             <Header>
                 <Title>코인</Title>
+                <button onClick={toggleDarkAtom}>Toggle Mode</button>
             </Header>
             {isLoading ? <Loader>"Loading..."</Loader> :
             <CoinsList>

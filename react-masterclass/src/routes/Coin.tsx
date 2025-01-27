@@ -6,7 +6,6 @@ import Chart from "./Chart";
 import {useQuery} from "react-query";
 import {fetchCoinInfo, fetchCoinTickers} from "../api";
 import {Helmet} from "react-helmet";
-import {Button} from "react-query/types/devtools/styledComponents";
 
 
 // const {coinId} = useParams<{coinId:string}>(); 처럼 params으로 넘어온값이 어떤타입인지 타입스크립트에게 알려줘야함. 또는 인터페이스를 사용해도됨.
@@ -243,7 +242,7 @@ function Coin({} : ICoinProps) {
                             <Price/>
                         </Route>
                         <Route path={`/:coinId/chart`}>
-                            <Chart isDark={isDark} coinId={coinId}/>
+                            <Chart coinId={coinId}/>
                         </Route>
 
                     </Switch>
