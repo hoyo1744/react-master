@@ -9,6 +9,7 @@ function ToDo({text, category, id}:IToDo) {
     // const onClick = (newCategory:IToDo["category"]) => {
     //     console.log("i wanna to ", newCategory);
     // }
+    // ...front의 의미는 front안에 있는 모든 원소를 풀어놓는다는 의미이다.
 
     const onClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         const {
@@ -20,9 +21,10 @@ function ToDo({text, category, id}:IToDo) {
             const targetIndex = oldToDos.findIndex( (toDo) => toDo.id === id);
             console.log(targetIndex);
             const oldToDo = oldToDos[targetIndex];
-            const newToDo = {text, id, category:name};
+            // as any를 넣어주면 타입체크하지 말라고 선언하는것.
+            const newToDo = {text, id, category:name as any};
             console.log(oldToDo, newToDo);
-            return oldToDos;
+            return [...oldToDos.slice(0, targetIndex), newToDo, ...oldToDos.slice(targetIndex + 1)];
         })
     }
 
