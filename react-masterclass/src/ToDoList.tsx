@@ -49,20 +49,37 @@ function ToDoList(){
 
     // register가 onChange를 대신해준다.
     // watch는 form의 입력값들의 변환를 관찬할 수 있게 해준다.
-    const {register, watch} = useForm();
+    // handleSumit이 validation을 담당하게 된다.
+    // handleSumit은 2개의 인자를 받음. 첫번째는 데이터가 올바른 경우 실행되는 함수
+    // 두번째는 에러가 발생했을댸 실행되는 함수
+    // 즉, 첫번째 함수는 모든 validation을 지나고 나서야 호출됨.
+    // formState는 에러 정보를 담고 있다.
+
+    const {register, watch, handleSubmit, formState} = useForm();
+
+    const onValid = (data:any) => {
+        console.log(data);
+    }
+
 
     // console.log(register("toDo"))
-    console.log(watch());
+    // console.log(watch());
+
+    console.log(formState.errors);
 
     return <div>
-        <form>
+        <form style={{display:"flex", flexDirection:"column"}}
+              onSubmit={handleSubmit(onValid)}>
             {/*아래처럼함으로써 register함수가 반환하는 객체 가져다가 input에 props로 전달해준다.*/}
-            <input {...register("email")} placeholder="Email"/>
-            <input {...register("fistName")} placeholder="First Name"/>
-            <input {...register("lastName")} placeholder="Last Name"/>
-            <input {...register("username")} placeholder="Username"/>
-            <input {...register("password")} placeholder="Password"/>
-            <input {...register("password1")} placeholder="Password1"/>
+            <input {...register("email", {required: true})} placeholder="Email"/>
+            <input {...register("fistName", {required: true})} placeholder="First Name"/>
+            <input {...register("lastName", {required: true})} placeholder="Last Name"/>
+            <input {...register("username", {required: true,  minLength: 10})} placeholder="Username"/>
+            <input {...register("password", {required: true, minLength: 5})} placeholder="Password"/>
+            <input {...register("password1", {required: "Password is required", minLength: {
+                value:5,
+                    message:"Your password is too short"
+                }})} placeholder="Password1"/>
             <button>Add</button>
         </form>
 
