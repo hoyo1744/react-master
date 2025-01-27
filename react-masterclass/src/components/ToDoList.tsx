@@ -10,7 +10,7 @@ function ToDoList() {
 
     // useRecoilState의 첫번째 인자는 값, 두번째인자는 변경 함수를 제공함.
     const toDos = useRecoilValue(toDosState);
-
+    console.log(toDos);
 
     return (
         <div>
