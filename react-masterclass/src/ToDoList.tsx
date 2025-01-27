@@ -47,10 +47,12 @@ import {useForm} from "react-hook-form";
 interface IForm {
     email: string,
     firstName: string,
-    lastName : string,
-    userName : string,
+    lastName: string,
+    userName: string,
     password: string,
     password1: string
+    // 필수가 아니라서 ?로 처리함.
+    extraError?: string;
 }
 
 
@@ -63,15 +65,19 @@ function ToDoList() {
     // 두번째는 에러가 발생했을댸 실행되는 함수
     // 즉, 첫번째 함수는 모든 validation을 지나고 나서야 호출됨.
     // formState는 에러 정보를 담고 있다.
-
-    const {register, watch, handleSubmit, formState:{errors}} = useForm<IForm>({
+    // setError는 특정한 (커스텀) 에러를 발생하도록 해준다.
+    const {register, watch, handleSubmit, formState: {errors}, setError} = useForm<IForm>({
         defaultValues: {
             email: "@naver.com",
         }
     });
 
-    const onValid = (data: any) => {
+    const onValid = (data: IForm) => {
         console.log(data);
+        if (data.password! !== data.password1) {
+            setError("password1", {message: "Password are not the same"}, {shouldFocus: true});
+        }
+        setError("extraError", {message: "Server offline."});
     }
 
 
@@ -94,7 +100,16 @@ function ToDoList() {
             <span>
                 {errors?.email?.message}
             </span>
-            <input {...register("firstName", {required: "firstName  is required."})} placeholder="First Name"/>
+            {/*validation 옵션은 현재 입력된 값이 인자로 들어온다.*/}
+            <input {...register("firstName", {
+                required: "firstName  is required.",
+                // 여러개의 validation을 넣을수도있음 noNico는 사용자가 정의한 validation 이름임. 임의로 지정가능
+                validate: {
+                    noNico : (value) => value.includes("nico") ? "no nicos allowed" : true,
+                    noNick : (value) => value.includes("nick") ? "no nicks allowed" : true
+
+                }
+            })} placeholder="First Name"/>
             <span>
                 {errors?.firstName?.message}
             </span>
@@ -102,7 +117,8 @@ function ToDoList() {
             <span>
                 {errors?.lastName?.message}
             </span>
-            <input {...register("userName", {required: "userName is required.", minLength: 10})} placeholder="Username"/>
+            <input {...register("userName", {required: "userName is required.", minLength: 10})}
+                   placeholder="Username"/>
             <span>
                 {errors?.userName?.message}
             </span>
@@ -120,6 +136,7 @@ function ToDoList() {
                 {errors?.password1?.message}
             </span>
             <button>Add</button>
+            <span>{errors?.extraError?.message}</span>
         </form>
 
     </div>
