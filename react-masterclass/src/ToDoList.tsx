@@ -81,9 +81,6 @@ function ToDoList() {
     }
 
 
-    // console.log(register("toDo"))
-    // console.log(watch());
-
     console.log(errors);
 
     return <div>
