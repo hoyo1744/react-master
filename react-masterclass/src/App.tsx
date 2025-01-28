@@ -1,6 +1,8 @@
-import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd"
+import {DragDropContext, Draggable, Droppable, DropResult} from "react-beautiful-dnd"
 import React from "react";
 import styled from "styled-components";
+import {toDoState} from "./atoms";
+import {useRecoilState} from "recoil";
 
 
 const Board = styled.div`
@@ -36,11 +38,13 @@ const Wrapper = styled.div`
     height: 100vh;
 `;
 
-const toDos = ["a", "b", "c", "d", "e", "f"];
+
 
 
 function App() {
-    const onDragEnd = () => {
+
+    const [toDos, setToDos] = useRecoilState(toDoState);
+    const onDragEnd = ({destination, source}:DropResult) => {
     };
 
     return (
@@ -52,7 +56,7 @@ function App() {
                         {
                             (magic) =>
                                 <Board ref={magic.innerRef} {...magic.droppableProps}>
-                                    {toDos.map((toDo, index) => <Draggable draggableId={toDo} index={index}>
+                                    {toDos.map((toDo, index) => <Draggable key={index} draggableId={toDo} index={index}>
                                         {/*기본적으로 요소가 드래그 되기를 원한다면 draggableProps를 넣어주면 된다.*/}
                                         {/*dragHandle은 드래그의 트리거를 말한다. 즉, 어느위치에서든 드래그가 되기를 원한다면 이걸 써야함.*/}
 
