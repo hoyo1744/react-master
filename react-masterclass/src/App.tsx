@@ -44,7 +44,16 @@ const Wrapper = styled.div`
 function App() {
 
     const [toDos, setToDos] = useRecoilState(toDoState);
-    const onDragEnd = ({destination, source}:DropResult) => {
+    const onDragEnd = ({draggableId, destination, source}:DropResult) => {
+        if(!destination) return;
+        setToDos((oldToDos) => {
+            const copyToDos = [...oldToDos];
+
+            copyToDos.splice(source.index, 1);
+            copyToDos.splice(destination?.index, 0, draggableId);
+
+            return copyToDos;
+        })
     };
 
     return (
@@ -56,7 +65,7 @@ function App() {
                         {
                             (magic) =>
                                 <Board ref={magic.innerRef} {...magic.droppableProps}>
-                                    {toDos.map((toDo, index) => <Draggable key={index} draggableId={toDo} index={index}>
+                                    {toDos.map((toDo, index) => <Draggable key={toDo} draggableId={toDo} index={index}>
                                         {/*기본적으로 요소가 드래그 되기를 원한다면 draggableProps를 넣어주면 된다.*/}
                                         {/*dragHandle은 드래그의 트리거를 말한다. 즉, 어느위치에서든 드래그가 되기를 원한다면 이걸 써야함.*/}
 
