@@ -3,6 +3,7 @@ import React from "react";
 import styled from "styled-components";
 import {toDoState} from "./atoms";
 import {useRecoilState} from "recoil";
+import DragabbleCard from "./components/DraggableCard";
 
 
 const Board = styled.div`
@@ -18,13 +19,6 @@ const Boards = styled.div`
     width: 100%;
     grid-template-columns: repeat(1, 1fr);
     
-`;
-
-const Card = styled.div`
-    background-color: ${(props) => props.theme.cardColor};
-    padding: 10px 10px;
-    border-radius: 5px;
-    margin-bottom: 5px;
 `;
 
 
@@ -65,16 +59,7 @@ function App() {
                         {
                             (magic) =>
                                 <Board ref={magic.innerRef} {...magic.droppableProps}>
-                                    {toDos.map((toDo, index) => <Draggable key={toDo} draggableId={toDo} index={index}>
-                                        {/*기본적으로 요소가 드래그 되기를 원한다면 draggableProps를 넣어주면 된다.*/}
-                                        {/*dragHandle은 드래그의 트리거를 말한다. 즉, 어느위치에서든 드래그가 되기를 원한다면 이걸 써야함.*/}
-
-                                        {(magic) => <Card
-                                            ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps} >
-                                            {/*dragHandleProps 있는 부분만 드래그가 가능함.*/}
-                                            {toDo}
-                                        </Card>}
-                                    </Draggable>)}
+                                    {toDos.map((toDo, index) => <DragabbleCard key={toDo} toDo={toDo} index={index}/>)}
                                     {magic.placeholder}
                                 </Board>
                         }
