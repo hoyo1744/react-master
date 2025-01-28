@@ -1,6 +1,6 @@
 import {Droppable} from "react-beautiful-dnd";
 import DragabbleCard from "./DraggableCard";
-import React from "react";
+import React, {useRef} from "react";
 import styled from "styled-components";
 
 //-- style
@@ -42,9 +42,18 @@ interface IBoardProps {
 }
 
 function Board({toDos, boardId}: IBoardProps) {
+
+    // REF는 react를 이용해서 HTML코드를 가져와서 사용하도록 하는것, 말그대로 참조구나.
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    const onClick = () => {
+        inputRef.current?.focus();
+    }
     return (
         <Wrapper>
             <Title>{boardId}</Title>
+            <input ref={inputRef} placeholder="grab me"/>
+            <button onClick={onClick}>click me</button>
             <Droppable droppableId={boardId}>
                 {
                     (magic, info) =>
