@@ -11,7 +11,7 @@ const Boards = styled.div`
     width: 100%;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px
-    
+
 `;
 
 
@@ -26,16 +26,18 @@ const Wrapper = styled.div`
 `;
 
 
-
-
 function App() {
 
     const [toDos, setToDos] = useRecoilState(toDoState);
-    const onDragEnd = (info:DropResult) => {
+    const onDragEnd = (info: DropResult) => {
         console.log(info);
 
         const {destination, draggableId, source} = info;
-        if ( destination?.droppableId === source.droppableId ) {
+        if (!destination) {
+            return;
+        }
+
+        if (destination.droppableId === source.droppableId) {
             // same board movement.
 
             setToDos((allBoards) => {
@@ -43,14 +45,31 @@ function App() {
                 const boardCopy = [...allBoards[source.droppableId]];
 
                 boardCopy.splice(source.index, 1);
-                boardCopy.splice(destination?.index, 0, draggableId);
+                boardCopy.splice(destination.index, 0, draggableId);
                 return {
                     ...allBoards,
-                    [source.droppableId] : boardCopy
-                } ;
+                    [source.droppableId]: boardCopy
+                };
             })
         }
 
+        if (destination.droppableId !== source.droppableId) {
+            // cross board movement
+            setToDos((allBoards) => {
+
+                const sourceBoardCopy = [...allBoards[source.droppableId]];
+                const destinationBoardCopy = [...allBoards[destination.droppableId]];
+
+                sourceBoardCopy.splice(source.index, 1);
+                destinationBoardCopy.splice(destination.index, 0, draggableId);
+
+                return {
+                    ...allBoards,
+                    [source.droppableId]: sourceBoardCopy,
+                    [destination.droppableId]: destinationBoardCopy
+                };
+            })
+        }
     };
 
     return (
@@ -58,7 +77,8 @@ function App() {
         <DragDropContext onDragEnd={onDragEnd}>
             <Wrapper>
                 <Boards>
-                    {Object.keys(toDos).map((boardId) => (<Board boardId={boardId} key={boardId} toDos={toDos[boardId]} />))}
+                    {Object.keys(toDos).map((boardId) => (
+                        <Board boardId={boardId} key={boardId} toDos={toDos[boardId]}/>))}
 
                 </Boards>
             </Wrapper>
