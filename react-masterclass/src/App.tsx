@@ -1,36 +1,23 @@
-import {DragDropContext, Draggable, Droppable, DropResult} from "react-beautiful-dnd"
+import {DragDropContext, DropResult} from "react-beautiful-dnd"
 import React from "react";
 import styled from "styled-components";
 import {toDoState} from "./atoms";
 import {useRecoilState} from "recoil";
+import Board from "./components/Board";
 
-
-const Board = styled.div`
-    background-color: ${(props) => props.theme.boardColor};
-    padding: 20px 10px;
-    padding-top: 30px;
-    border-radius: 5px;
-    min-height: 200px;
-`;
 
 const Boards = styled.div`
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(1, 1fr);
-    
-`;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px
 
-const Card = styled.div`
-    background-color: ${(props) => props.theme.cardColor};
-    padding: 10px 10px;
-    border-radius: 5px;
-    margin-bottom: 5px;
 `;
 
 
 const Wrapper = styled.div`
     display: flex;
-    max-width: 480px;
+    max-width: 680px;
     width: 100%;
     margin: 0 auto;
     justify-content: center;
@@ -39,21 +26,52 @@ const Wrapper = styled.div`
 `;
 
 
-
-
 function App() {
 
     const [toDos, setToDos] = useRecoilState(toDoState);
-    const onDragEnd = ({draggableId, destination, source}:DropResult) => {
-        if(!destination) return;
-        setToDos((oldToDos) => {
-            const copyToDos = [...oldToDos];
+    const onDragEnd = (info: DropResult) => {
+        console.log(info);
 
-            copyToDos.splice(source.index, 1);
-            copyToDos.splice(destination?.index, 0, draggableId);
+        const {destination, draggableId, source} = info;
+        if (!destination) {
+            return;
+        }
 
-            return copyToDos;
-        })
+        if (destination.droppableId === source.droppableId) {
+            // same board movement.
+
+            setToDos((allBoards) => {
+
+                const boardCopy = [...allBoards[source.droppableId]];
+                const taskObj = boardCopy[source.index];
+
+                boardCopy.splice(source.index, 1);
+                boardCopy.splice(destination.index, 0, taskObj);
+                return {
+                    ...allBoards,
+                    [source.droppableId]: boardCopy
+                };
+            })
+        }
+
+        if (destination.droppableId !== source.droppableId) {
+            // cross board movement
+            setToDos((allBoards) => {
+
+                const sourceBoardCopy = [...allBoards[source.droppableId]];
+                const taskObj = sourceBoardCopy[source.index];
+                const destinationBoardCopy = [...allBoards[destination.droppableId]];
+
+                sourceBoardCopy.splice(source.index, 1);
+                destinationBoardCopy.splice(destination.index, 0, taskObj);
+
+                return {
+                    ...allBoards,
+                    [source.droppableId]: sourceBoardCopy,
+                    [destination.droppableId]: destinationBoardCopy
+                };
+            })
+        }
     };
 
     return (
@@ -61,24 +79,9 @@ function App() {
         <DragDropContext onDragEnd={onDragEnd}>
             <Wrapper>
                 <Boards>
-                    <Droppable droppableId="one">
-                        {
-                            (magic) =>
-                                <Board ref={magic.innerRef} {...magic.droppableProps}>
-                                    {toDos.map((toDo, index) => <Draggable key={toDo} draggableId={toDo} index={index}>
-                                        {/*기본적으로 요소가 드래그 되기를 원한다면 draggableProps를 넣어주면 된다.*/}
-                                        {/*dragHandle은 드래그의 트리거를 말한다. 즉, 어느위치에서든 드래그가 되기를 원한다면 이걸 써야함.*/}
+                    {Object.keys(toDos).map((boardId) => (
+                        <Board boardId={boardId} key={boardId} toDos={toDos[boardId]}/>))}
 
-                                        {(magic) => <Card
-                                            ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps} >
-                                            {/*dragHandleProps 있는 부분만 드래그가 가능함.*/}
-                                            {toDo}
-                                        </Card>}
-                                    </Draggable>)}
-                                    {magic.placeholder}
-                                </Board>
-                        }
-                    </Droppable>
                 </Boards>
             </Wrapper>
         </DragDropContext>
