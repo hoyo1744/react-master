@@ -2,6 +2,8 @@ import {Droppable} from "react-beautiful-dnd";
 import DragabbleCard from "./DraggableCard";
 import React, {useRef} from "react";
 import styled from "styled-components";
+import {useForm} from "react-hook-form";
+import {ITodo} from "../atoms";
 
 //-- style
 
@@ -34,31 +36,47 @@ const Area = styled.div<IAreaProps>`
     padding: 20px;
 `;
 
+const Form = styled.form`
+  width: 100%;  
+    input {
+        width: 100%
+    }
+`;
+
 //-- interface
 
 interface IBoardProps {
-    toDos: string[];
+    toDos: ITodo[];
     boardId: string;
 }
 
+interface IForm {
+    toDo: string;
+}
+
+
 function Board({toDos, boardId}: IBoardProps) {
 
-    // REF는 react를 이용해서 HTML코드를 가져와서 사용하도록 하는것, 말그대로 참조구나.
-    const inputRef = useRef<HTMLInputElement>(null);
 
-    const onClick = () => {
-        inputRef.current?.focus();
+    const {register, setValue, handleSubmit } = useForm<IForm>();
+
+    const onValid = ({toDo}:IForm) => {
+
+        setValue("toDo", "");
     }
+
+
     return (
         <Wrapper>
             <Title>{boardId}</Title>
-            <input ref={inputRef} placeholder="grab me"/>
-            <button onClick={onClick}>click me</button>
+            <Form onSubmit={handleSubmit(onValid)}>
+                <input {...register("toDo", {required: true})} type="text" placeholder={`Add task on ${boardId}`}/>
+            </Form>
             <Droppable droppableId={boardId}>
                 {
                     (magic, info) =>
                         <Area isDraggableOver={info.isDraggingOver} isDraggingFromThisWith={Boolean(info.draggingFromThisWith)} ref={magic.innerRef} {...magic.droppableProps}>
-                            {toDos.map((toDo, index) => <DragabbleCard key={toDo} toDo={toDo} index={index}/>)}
+                            {toDos.map((toDo, index) => <DragabbleCard key={toDo.id} toDoId={toDo.id} toDoText={toDo.text} index={index}/>)}
                             {magic.placeholder}
                         </Area>
                 }

@@ -14,16 +14,16 @@ const Card = styled.div<{isDragging:boolean}>`
 
 
 interface IDragabbleCardProps {
-    toDo: string;
+    toDoId: number;
+    toDoText: string;
     index: number;
 }
 
 
-function DraggableCard({toDo, index} : IDragabbleCardProps) {
-    console.log(toDo, "has bean rendered");
+function DraggableCard({toDoId, index, toDoText} : IDragabbleCardProps) {
 
     return (
-        <Draggable key={toDo} draggableId={toDo} index={index}>
+        <Draggable key={toDoId} draggableId={toDoId+""} index={index}>
             {/*기본적으로 요소가 드래그 되기를 원한다면 draggableProps를 넣어주면 된다.*/}
             {/*dragHandle은 드래그의 트리거를 말한다. 즉, 어느위치에서든 드래그가 되기를 원한다면 이걸 써야함.*/}
 
@@ -33,7 +33,7 @@ function DraggableCard({toDo, index} : IDragabbleCardProps) {
 
                 ref={magic.innerRef} {...magic.draggableProps} {...magic.dragHandleProps} >
                 {/*dragHandleProps 있는 부분만 드래그가 가능함.*/}
-                {toDo}
+                {toDoText}
             </Card>}
         </Draggable>
     )
