@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { motion } from "framer-motion"
+import {correctBorderRadius} from "framer-motion/types/projection";
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -9,19 +10,25 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
-const Box = styled.div`
+// 스타일컴포넌트에 애니메이션을 적용하기 위한 방법
+const Box = styled(motion.div)`
   width: 200px;
   height: 200px;
   background-color: white;
-  border-radius: 10px;
+  border-radius: 15px;
+  text: "tt";
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
+
+
 
 function App() {
     return (
         <Wrapper>
-            <Box />
-            <motion.div></motion.div>
+            <Box initial={{scale:0}}
+                 animate={{scale: 1, rotateZ: 360}}
+                 transition={{type:"spring", delay: 0.5}}
+            />
         </Wrapper>
     );
 }
