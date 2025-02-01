@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import {motion} from "framer-motion"
-import {useRef} from "react";
+import {motion, useMotionValue} from "framer-motion"
+import {useEffect, useRef} from "react";
 
 const Wrapper = styled.div`
     height: 100vh;
@@ -48,25 +48,34 @@ function App() {
 
     const biggerBoxRef = useRef<HTMLDivElement>(null)
 
+    const x = useMotionValue(0)
+    useEffect(() => {
+        x.onChange( () => console.log(x.get()))
+    }, [x])
+
     return (
         <Wrapper>
-            <BiggerBox ref={biggerBoxRef}>
+            {/*<BiggerBox ref={biggerBoxRef}>*/}
             {/*varients는 기본적으로 자식들에게 기본적으로 제공됨. 마치 상속처럼*/}
             {/*그래서 자식컴포넌트들은 initial과 animate에 기본값으로 부모값이 드렁감.*/}
+            <button onClick={() => x.set(200)}>click me</button>
             {/*즉, Box의 애니메이션이 기본적으로 CIrcle에도 적용될것임. 기본값으로 !*/}
             <Box
-                drag
-                dragConstraints={biggerBoxRef}
+                style={{x}}
+                drag="x"
                 dragSnapToOrigin
-                dragElastic={0}
-                variants={boxVariants}
-                whileHover="hover"
-                whileDrag="drag"
-                whileTap="click"
+                // drag
+                // dragConstraints={biggerBoxRef}
+                // dragSnapToOrigin
+                // dragElastic={0}
+                // variants={boxVariants}
+                // whileHover="hover"
+                // whileDrag="drag"
+                // whileTap="click"
             >
 
             </Box>
-            </BiggerBox>
+            {/*</BiggerBox>*/}
         </Wrapper>
     );
 }
