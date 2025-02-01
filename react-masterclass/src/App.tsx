@@ -1,13 +1,14 @@
 import styled from "styled-components";
-import {motion, useMotionValue, useTransform} from "framer-motion"
+import {motion, useMotionValue, useTransform, useViewportScroll} from "framer-motion"
 import {useEffect, useRef} from "react";
 
-const Wrapper = styled.div`
-    height: 100vh;
+const Wrapper = styled(motion.div)`
+    height: 200vh;
     width: 100vw;
     display: flex;
     justify-content: center;
     align-items: center;
+    background: linear-gradient(135deg, rgb(238,0,153), rgb(238, 0, 153));
 `;
 
 // 스타일컴포넌트에 애니메이션을 적용하기 위한 방법
@@ -49,20 +50,30 @@ function App() {
     const biggerBoxRef = useRef<HTMLDivElement>(null)
 
     const x = useMotionValue(0)
-    const potato = useTransform(x, [-800, 0, 800], [2,1 ,0.1])
+    const rotate = useTransform(x, [-800, 800], [-360, 360])
+
+    const gradient = useTransform(x, [-800, 800], [
+        "linear-gradient(135deg, rgb(0, 210, 238), rgb(0, 83, 238))",
+        "linear-gradient(135deg, rgb(0, 238, 155), rgb(238, 178, 0))",
+    ])
+
+    const {scrollY, scrollYProgress} = useViewportScroll();
+    const scale = useTransform(scrollYProgress, [0, 1], [1, 5]);
+
     useEffect(() => {
-        potato.onChange( () => console.log(potato.get()))
-    }, [x])
+        scrollY.onChange(() => {console.log(scrollY.get(), scrollYProgress.get())})
+
+    }, [scrollY, scrollYProgress])
 
     return (
-        <Wrapper>
+        <Wrapper style={{background: gradient}}>
             {/*<BiggerBox ref={biggerBoxRef}>*/}
             {/*varients는 기본적으로 자식들에게 기본적으로 제공됨. 마치 상속처럼*/}
             {/*그래서 자식컴포넌트들은 initial과 animate에 기본값으로 부모값이 드렁감.*/}
             {/*<button onClick={() => x.set(200)}>click me</button>*/}
             {/*즉, Box의 애니메이션이 기본적으로 CIrcle에도 적용될것임. 기본값으로 !*/}
             <Box
-                style={{x, scale: potato}}
+                style={{x, rotate, scale}}
                 drag="x"
                 dragSnapToOrigin
                 // drag
