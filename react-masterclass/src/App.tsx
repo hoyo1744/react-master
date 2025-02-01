@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import {motion} from "framer-motion"
+import {useRef} from "react";
 
 const Wrapper = styled.div`
     height: 100vh;
@@ -17,7 +18,6 @@ const Box = styled(motion.div)`
     //grid-template-columns: repeat(2, 1fr);
     background-color: rgba(255, 255, 255, 1);
     border-radius: 15px;
-    text: "tt";
     box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
@@ -33,22 +33,40 @@ const boxVariants = {
     }
 }
 
+const BiggerBox = styled.div`
+    width: 600px;
+    height: 600px;
+    background-color: rgba(255, 255, 255, 0.4);
+    border-radius: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+`;
+
 function App() {
+
+    const biggerBoxRef = useRef<HTMLDivElement>(null)
+
     return (
         <Wrapper>
+            <BiggerBox ref={biggerBoxRef}>
             {/*varients는 기본적으로 자식들에게 기본적으로 제공됨. 마치 상속처럼*/}
             {/*그래서 자식컴포넌트들은 initial과 animate에 기본값으로 부모값이 드렁감.*/}
             {/*즉, Box의 애니메이션이 기본적으로 CIrcle에도 적용될것임. 기본값으로 !*/}
             <Box
                 drag
+                dragConstraints={biggerBoxRef}
+                dragSnapToOrigin
+                dragElastic={0}
                 variants={boxVariants}
                 whileHover="hover"
                 whileDrag="drag"
                 whileTap="click"
-
             >
 
             </Box>
+            </BiggerBox>
         </Wrapper>
     );
 }
